@@ -21,8 +21,13 @@ public class JwtUtil {
     private Long expiration;
 
     private SecretKey getSigningKey() {
+        // Ensure minimum 32 bytes for HS256
+        if (secret.getBytes().length < 32) {
+            throw new IllegalArgumentException("JWT secret must be at least 32 bytes long for HS256");
+        }
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
+
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
